@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.18)
+project(BeeTween)
+
+
+set(TARGET_NAME Breakout)
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+option( "Use ASAN" FALSE)
+
+
+set(SOURCE_FILES
+    ${SOURCE_DIR}/ease_function.h   ${SOURCE_DIR}/ease_function.cpp
+    ${SOURCE_DIR}/tween.h
+    ${SOURCE_DIR}/tween_engine.h    ${SOURCE_DIR}/tween_engine.cpp
+    ${SOURCE_DIR}/tween_instance.h  ${SOURCE_DIR}/tween_instance.cpp
+    ${SOURCE_DIR}/tweenable.h       ${SOURCE_DIR}/tweenable.cpp
+)
+
+add_executable(${TARGET_NAME}
+    ${SOURCE_FILES}
+)
+
+target_include_directories(${TARGET_NAME} PUBLIC
+    ${SOURCE_DIR}
+)
+
+if(USE_ASAN)
+    if(WIN32)
+        target_compile_options(${TARGET_NAME} PUBLIC /fsanitize=address)
+        target_link_options(${TARGET_NAME} PUBLIC /fsanitize=address)
+    else()
+        target_compile_options(${TARGET_NAME} PUBLIC -fsanitize=address)
+        target_link_options(${TARGET_NAME} PUBLIC -fsanitize=address)
+    endif()
+endif()
+
+
+# enable c++20 features
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
+set_property(TARGET ${TARGET_NAME} PROPERTY
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED TRUE
+    CXX_EXTENSIONS FALSE
+)
+
+# compile at max warning level + treat warnings as errors
+target_compile_options(${TARGET_NAME} PUBLIC
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /MP>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
+# Visual studio needs to be special
+if(WIN32)
+    # Fix startup project for visual stuidio
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
+    # Fix working directory for visual studio
+    set_target_properties(${TARGET_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>")
+endif()

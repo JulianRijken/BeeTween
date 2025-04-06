@@ -1,13 +1,13 @@
 #ifndef TWEENINSTANCE_H
 #define TWEENINSTANCE_H
-#include "Event.h"
-#include "Tween.h"
+#include "event.h"
+#include "tween.h"
 
-namespace bin
+namespace beetween
 {
     class Node;
 
-    class TweenInstance final : public bin::IEventListener
+    class TweenInstance final : public beetween::IEventListener
     {
         friend class TweenEngine;
 
@@ -23,7 +23,7 @@ namespace bin
         bool m_IsHalting{ false };
         bool m_IsDecommissioned{ false };
         bool m_HasReachedEnd{ false };
-        float m_Time{ 0 };
+        double m_Time{ 0 };
 
         Node* m_Target{ nullptr };
         Tween m_Tween;

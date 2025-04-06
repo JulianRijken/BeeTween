@@ -4,18 +4,15 @@
 #include <memory>
 #include <vector>
 
-#include "Singleton.h"
-#include "Tween.h"
-#include "TweenInstance.h"
+#include "tween.h"
+#include "tween_instance.h"
 
 // Hevaly inspried by "unity-tweens" from Jeffery Lanters
 // https://github.com/jeffreylanters/unity-tweens
 
-namespace bin
+namespace beetween
 {
-    class Node;
-
-    class TweenEngine final : public Singleton<TweenEngine>
+    class TweenEngine final
     {
         friend class Core;
 
@@ -28,5 +25,5 @@ namespace bin
         std::vector<std::unique_ptr<TweenInstance>> m_TweenInstances;
     };
 
-}  // namespace bin
+}  // namespace beetween
 #endif // TWEENENGINE_H

@@ -1,8 +1,6 @@
-#include "TweenEngine.h"
+#include "tween_engine.h"
 
 #include <iostream>
-
-#include "Node.h"
 
 void bin::TweenEngine::Update()
 {
@@ -27,7 +25,7 @@ void bin::TweenEngine::Update()
     }
 }
 
-void bin::TweenEngine::Start(Tween&& tween, Node& target)
+void beetween::TweenEngine::Start(Tween&& tween, Node& target)
 {
     if(target.IsGettingDestroyed())
     {
@@ -54,7 +52,7 @@ void bin::TweenEngine::Start(Tween&& tween, Node& target)
         std::unique_ptr<TweenInstance>(new TweenInstance(std::move(tween), target)));
 }
 
-void bin::TweenEngine::Start(const Tween& tween, Node& target)
+void beetween::TweenEngine::Start(const Tween& tween, Node& target)
 {
     Tween tweenCopy = tween;
     Start(std::move(tweenCopy), target);

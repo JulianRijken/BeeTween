@@ -1,12 +1,11 @@
-#include "TweenInstance.h"
+#include "tween_instance.h"
 
 #include <cmath>
 
 #include "GameTime.h"
 #include "MathExtensions.h"
-#include "Node.h"
 
-bin::TweenInstance::TweenInstance(Tween&& tween, Node& target) :
+beetween::TweenInstance::TweenInstance(Tween&& tween, Node& target) :
     m_IsHalting(tween.delay > 0),
     m_Target(&target),
     m_Tween(std::move(tween))
@@ -15,9 +14,9 @@ bin::TweenInstance::TweenInstance(Tween&& tween, Node& target) :
     m_Target->m_OnDestroyedEvent.AddListener(this, &TweenInstance::OnTargetDestroyed);
 }
 
-void bin::TweenInstance::OnTargetDestroyed(Node& /*unused*/) { m_Target = nullptr; }
+void beetween::TweenInstance::OnTargetDestroyed(Node& /*unused*/) { m_Target = nullptr; }
 
-void bin::TweenInstance::Cancel()
+void beetween::TweenInstance::Cancel()
 {
     if(m_Tween.invokeWhenDestroyed and m_Target == nullptr)
     {
@@ -28,7 +27,7 @@ void bin::TweenInstance::Cancel()
     m_IsDecommissioned = true;
 }
 
-void bin::TweenInstance::Update()
+void beetween::TweenInstance::Update()
 {
     if(m_Target == nullptr)
     {
@@ -36,7 +35,7 @@ void bin::TweenInstance::Update()
         return;
     }
 
-    const float deltaTime = m_Tween.ignoreTimeScale ? GameTime::GetUnscaledDeltaTime() : GameTime::GetDeltaTime();
+    const double deltaTime = m_Tween.ignoreTimeScale ? GameTime::GetUnscaledDeltaTime() : GameTime::GetDeltaTime();
 
     if(m_IsHalting)
     {
@@ -60,7 +59,7 @@ void bin::TweenInstance::Update()
 
     // Yes, datetime can go below 0
     // when we change timescale :)
-    m_Time = std::max(0.0f, m_Time);
+    m_Time = std::max(0.0, m_Time);
 
     if(m_Time >= m_Tween.duration)
     {
@@ -68,9 +67,9 @@ void bin::TweenInstance::Update()
         m_HasReachedEnd = true;
     }
 
-    const float alpha = bin::math::Clamp01(m_Time / m_Tween.duration);
-    const float easedTime = easeFunction::Evaluate(alpha, m_Tween.easeType);
-    const float interpolatedValue = std::lerp(m_Tween.from, m_Tween.to, easedTime);
+    const double alpha = beetween::math::Clamp01(m_Time / m_Tween.duration);
+    const double easedTime = easeFunction::Evaluate(alpha, m_Tween.easeType);
+    const double interpolatedValue = std::lerp(m_Tween.from, m_Tween.to, easedTime);
 
 
     if(m_Tween.onUpdate)
